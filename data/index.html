@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Configuration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .status-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .status-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .status-connected {
+            color: #28a745;
+        }
+
+        .status-disconnected {
+            color: #dc3545;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 ESP32 Device Configuration</h1>
+            <p>Configure your device settings and monitor status</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="status-card">
+            <h3 style="margin-bottom: 15px; color: #333; font-size: 18px;">Device Status</h3>
+            <div class="status-item">
+                <span class="status-label">WiFi Status:</span>
+                <span id="wifi-status" class="status-value">Loading...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">IP Address:</span>
+                <span id="ip-address" class="status-value">Loading...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Signal Strength:</span>
+                <span id="signal-strength" class="status-value">Loading...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Uptime:</span>
+                <span id="uptime" class="status-value">Loading...</span>
+            </div>
+        </div>
+
+        <form id="config-form">
+            <div class="form-group">
+                <label for="ssid">WiFi Network (SSID)</label>
+                <input type="text" id="ssid" name="ssid" placeholder="Enter WiFi network name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">WiFi Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter WiFi password">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Save Configuration
+            </button>
+
+            <button type="button" class="btn btn-secondary" onclick="refreshStatus()">
+                Refresh Status
+            </button>
+        </form>
+
+        <div class="footer">
+            <p>ESP32 Template Project | Firmware v1.0.0</p>
+        </div>
+    </div>
+
+    <script>
+        // Load status on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStatus();
+            // Refresh status every 10 seconds
+            setInterval(loadStatus, 10000);
+        });
+
+        // Handle form submission
+        document.getElementById('config-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const ssid = document.getElementById('ssid').value;
+            const password = document.getElementById('password').value;
+            
+            const formData = new FormData();
+            formData.append('ssid', ssid);
+            formData.append('password', password);
+            
+            try {
+                showAlert('Saving configuration...', 'info');
+                
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert('Configuration saved successfully! Device will reconnect...', 'success');
+                    setTimeout(() => {
+                        loadStatus();
+                    }, 5000);
+                } else {
+                    showAlert('Error: ' + (data.error || 'Failed to save configuration'), 'error');
+                }
+            } catch (error) {
+                showAlert('Error: Failed to communicate with device', 'error');
+            }
+        });
+
+        // Load device status
+        async function loadStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                // Update WiFi status
+                const wifiStatus = document.getElementById('wifi-status');
+                if (data.wifi_connected) {
+                    wifiStatus.textContent = 'Connected';
+                    wifiStatus.className = 'status-value status-connected';
+                } else {
+                    wifiStatus.textContent = 'Disconnected';
+                    wifiStatus.className = 'status-value status-disconnected';
+                }
+                
+                // Update IP address
+                document.getElementById('ip-address').textContent = data.ip_address || 'N/A';
+                
+                // Update signal strength
+                const signalStrength = data.signal_strength || 0;
+                document.getElementById('signal-strength').textContent = 
+                    signalStrength ? signalStrength + ' dBm' : 'N/A';
+                
+                // Update uptime
+                const uptimeSeconds = Math.floor(data.uptime / 1000);
+                const hours = Math.floor(uptimeSeconds / 3600);
+                const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+                const seconds = uptimeSeconds % 60;
+                document.getElementById('uptime').textContent = 
+                    `${hours}h ${minutes}m ${seconds}s`;
+                
+                // Pre-fill SSID if available
+                if (data.ssid && data.ssid !== 'Not connected') {
+                    document.getElementById('ssid').value = data.ssid;
+                }
+            } catch (error) {
+                console.error('Failed to load status:', error);
+                showAlert('Failed to load device status', 'error');
+            }
+        }
+
+        // Refresh status button
+        function refreshStatus() {
+            showAlert('Refreshing status...', 'info');
+            loadStatus();
+            setTimeout(() => {
+                hideAlert();
+            }, 1000);
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = 'alert alert-' + type;
+            alert.style.display = 'block';
+        }
+
+        // Hide alert message
+        function hideAlert() {
+            const alert = document.getElementById('alert');
+            alert.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
