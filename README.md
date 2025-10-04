@@ -95,9 +95,20 @@ template-esp32-project/
 
 ## 📖 Documentation
 
+### Getting Started
+- **[Quick Start Guide](QUICKSTART.md)**: Get running in 5 minutes! ⚡
 - **[Setup Guide](docs/SETUP.md)**: Detailed installation and setup instructions
-- **[OTA Updates](docs/OTA_UPDATES.md)**: How to perform over-the-air firmware updates
+- **[Project Checklist](CHECKLIST.md)**: Track your setup progress
+
+### Technical Documentation
+- **[Architecture](ARCHITECTURE.md)**: System design and component interactions
+- **[Folder Structure](FOLDER_STRUCTURE.md)**: Project organization and file layout
 - **[API Documentation](docs/API.md)**: HTTP API endpoints and usage examples
+- **[OTA Updates](docs/OTA_UPDATES.md)**: Over-the-air firmware update guide
+
+### Learning Resources
+- **[Examples](docs/EXAMPLES.md)**: Code examples for common use cases
+- **[Contributing](CONTRIBUTING.md)**: How to contribute to this project
 
 ## 🎯 Usage Examples
 
